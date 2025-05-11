@@ -1,0 +1,141 @@
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatingText {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0); }
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+	background-image: url('images/spback2.png');
+    background-size: cover;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    color: white;
+    backdrop-filter: blur(1px);  /* Increased blur for smoother effect */
+    -webkit-backdrop-filter: blur(1px); /* For Safari support */
+    transition: backdrop-filter 0.3s ease; /* Smooth background change */
+}
+
+h1 {
+    font-size: 4rem; /* Increased size */
+    font-weight: bold;
+    margin: 20px 0;
+    animation: floatingText 3s ease-in-out infinite; /* Only keep floating animation */
+    position: relative;
+    color: white; /* Remove glowing color */
+}
+
+h1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+    z-index: -1; /* Place behind the text */
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    transition: transform 0.3s ease-in-out; /* Smooth transition */
+}
+
+.container:hover {
+    transform: scale(1.05); /* Hover effect on the entire container */
+}
+
+.widget {
+    width: 250px;
+    margin: 20px;
+    padding: 15px;
+    border-radius: 15px;
+    background: rgba(30, 30, 30, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s, box-shadow 0.3s;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.widget:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 255, 170, 0.7); /* Glowing effect on hover */
+}
+
+.widget h3 {
+    color: #00ffaa;
+    font-size: 1.25rem; /* Slightly larger for more emphasis */
+    font-weight: bold;
+    /* Removed glow animation */
+}
+
+.widget .emoji {
+    font-size: 2rem;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+}
+
+.switch input { 
+    display: none; 
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #555;
+    border-radius: 25px;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background: white;
+    border-radius: 50%;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background: #00ffaa;
+}
+
+input:checked + .slider:before {
+    transform: translateX(25px);
+}
+
+.widget h3:hover {
+    color: #00ffee; /* Slight change when hovering over widget titles */
+}
+
+.widget p {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #ddd;
+    transition: color 0.3s ease;
+}
+
+.widget p:hover {
+    color: #00ffaa; /* Change color on hover */
+}

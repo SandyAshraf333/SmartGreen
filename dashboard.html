@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART GREEN Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/justgage@1.3.0/justgage.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px #00ffaa; }
+            50% { text-shadow: 0 0 20px #00ffaa; }
+            100% { text-shadow: 0 0 5px #00ffaa; }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('images/spback2.png');
+            background-size: cover;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+            animation: glow 2s infinite alternate;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .widget {
+            width: 250px;
+            margin: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            background: rgba(30, 30, 30, 0.8);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .widget:hover {
+            transform: scale(1.05);
+        }
+        .widget h3 {
+            color: #00ffaa;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 25px;
+        }
+        .switch input { display: none; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #555;
+            border-radius: 25px;
+            transition: .4s;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background: white;
+            border-radius: 50%;
+            transition: .4s;
+        }
+        input:checked + .slider {
+            background: #00ffaa;
+        }
+        input:checked + .slider:before {
+            transform: translateX(25px);
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.open('data-history.html', '_blank');" class="data-history-btn">View Data History</button>
+    <h1>🌍 SMART GREEN 🌱</h1>
+    <div class="container">
+        <div class="widget"><h3>Temperature 🌡️ (°C)</h3><div id="tempGauge"></div></div>
+        <div class="widget"><h3>Humidity 💧 (%)</h3><div id="humidityGauge"></div></div>
+        <div class="widget"><h3>Soil Moisture 🌾 (%)</h3><div id="moistureGauge"></div></div>
+        <div class="widget"><h3>Water Level 💦 (%)</h3><div id="waterGauge"></div></div>
+        <div class="widget"><h3>PLANT GROWTH 🌱 (CM)</h3><div id="rpmGauge"></div></div>
+        <div class="widget"><h3>NUTRIENT LEVEL 💧 (PPM)</h3><div id="pressureGauge"></div></div>
+        <div class="widget"><h3>PH LEVEL ⚗️ (PH)</h3><div id="lightGauge"></div></div>
+        <div class="widget">
+            <h3>Controls ⚙️</h3>
+            <p>Water Pump <label class="switch"><input type="checkbox" id="pumpSwitch"><span class="slider"></span></label></p>
+            <p>Sun Wiser 🌞 <label class="switch"><input type="checkbox" id="sunSwitch"><span class="slider"></span></label></p>
+            <p>UV Light 🌟 <label class="switch"><input type="checkbox" id="lightSwitch"><span class="slider"></span></label></p>
+            <p>Air Cooler ❄️ <label class="switch"><input type="checkbox" id="fanSwitch"><span class="slider"></span></label></p>
+            
+    </div>
+    <script>
+        var tempGauge = new JustGage({ id: "tempGauge", value: 0, min: 0, max: 50, title: "Temp (°C)" });
+        var humidityGauge = new JustGage({ id: "humidityGauge", value: 0, min: 0, max: 100, title: "Humidity (%)" });
+        var moistureGauge = new JustGage({ id: "moistureGauge", value: 0, min: 0, max: 100, title: "Soil Moisture (%)" });
+        var waterGauge = new JustGage({ id: "waterGauge", value: 0, min: 0, max: 100, title: "Water Level (%)" });
+        var rpmGauge = new JustGage({ id: "rpmGauge", value: 0, min: 0, max: 3000, title: "Fan RPM (RPM)" });
+        var pressureGauge = new JustGage({ id: "pressureGauge", value: 900, min: 900, max: 1100, title: "Pressure (hPa)" });
+        var lightGauge = new JustGage({ id: "lightGauge", value: 0, min: 0, max: 1000, title: "Light Intensity (lux)" });
+        
+        function updateData() {
+            fetch('get_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    tempGauge.refresh(parseFloat(data.temperature));
+                    humidityGauge.refresh(parseFloat(data.humidity));
+                    moistureGauge.refresh(parseFloat(data.soil_moisture));
+                    waterGauge.refresh(parseFloat(data.water_level));
+                    rpmGauge.refresh(parseFloat(data.fan_rpm));
+                    pressureGauge.refresh(parseFloat(data.pressure));
+                    lightGauge.refresh(parseFloat(data.light_intensity));
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+        setInterval(updateData, 5000);
+    </script>
+</body>
+</html>
